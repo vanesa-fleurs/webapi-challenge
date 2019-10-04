@@ -74,9 +74,25 @@ router.put('/:id', validateProjectId, (req,res) => {
         });
 
 })
+//*************************************DELETE   *************************************
 
-//CUSTOM MIDDLEWARE
+router.delete('/:id', validateProjectId, (req,res) => {
+    const { id } = req.params;
+    PM.remove(id)
+        .then(() => res.status(204).json({message: `you have successfully deleted the project with ID: ${id}`}))
+        .catch(error => {
+            console.log("error in DELETE", error);
+            res.status(500).json({error: `error in deleting project with an id of: ${id}`})
+        })
+})
 
+
+
+
+
+
+
+////*************************************CUSTOM MIDDLEWARE*************************************
 function validateProjectId(req,res,next) {
     const { id } = req.params;
     PM.get(id)
