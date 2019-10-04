@@ -148,7 +148,7 @@ function validateActionId(req,res,next) {
                 next();
             }
             else{
-                res.status(404).json({error: `Action with id of ${actionID} does not exist`});
+                res.status(404).json({error: `Action with id of ${actionID} does not exist for the queried project`});
             }
         })
 }
