@@ -25,7 +25,12 @@ const router = express.Router();
 //endpoints 
 //*************************************GET   *************************************
 router.get('/:id', validateProjectId, (req,res) => {
-    res.status(200).json(req.project.actions);
+    if(req.project.actions.length == 0){
+    return res.status(200).json({error: `you do not have any actions at the moment for this project`})
+    }
+    else{
+        res.status(200).json(req.project.actions);
+    }
 })
 
 
