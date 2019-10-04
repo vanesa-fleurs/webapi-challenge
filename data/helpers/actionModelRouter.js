@@ -33,7 +33,9 @@ router.get('/:id', validateProjectId, (req,res) => {
     }
 })
 
-
+router.get('/:id/:actionID', validateProjectId, validateActionId, (req,res) => {
+    res.status(200).json(req.action);
+})
 
 //*************************************POST == insert  *************************************
 router.post('/:id', validateProjectId, validateActionPost, (req,res) => {
@@ -50,12 +52,23 @@ router.post('/:id', validateProjectId, validateActionPost, (req,res) => {
 })
 
 
+
+
 //*************************************PUT   *************************************
 
 
 
-//*************************************DELETE   *************************************
-
+//*************************************DELETE: remove *************************************
+router.delete('/:id/:actionID', validateProjectId, validateActionId, (req,res) => {
+    const { id } = req.params;
+    const { actionID } = req.params;
+    AM.remove(actionID) 
+        .then(() => res.status(204).json({message: `you have successfully deleted the ACTION with ID: ${id}`}))
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({error: `There has been an error in deleting project ${id}'s action with ID ${actionID}!`})
+        });
+})
 
 
 ////*************************************CUSTOM MIDDLEWARE*************************************
@@ -111,6 +124,25 @@ function validateActionPost(req,res,next) {
     req.body = { project_id, description, notes }
     next();
 
+}
+
+function validateActionId(req,res,next) {
+    const { actionID } = req.params;
+    AM.get(actionID)
+        .then(action => {
+            console.log("ACTION within validateProjectId: ", action);
+            if(action) {
+                req.action = action
+                next();
+            }
+            else{
+                res.status(404).json({error: `Action with id of ${actionID} does not exist`});
+            }
+        })
+        // .catch(error => {
+        //     console.log("error in validateActinoId", error);
+        //     res.status(500).json({error: "Project with id does not exist"});
+        // })
 }
 
 
