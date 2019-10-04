@@ -1,8 +1,10 @@
 const express = require('express');
 
+const AM = require('./actionModel.js');
+
+
 const PM =require('./projectModel.js');
 
-const AM = require('./actionModel.js');
 
 const router = express.Router();
 
@@ -18,7 +20,44 @@ const router = express.Router();
 //         res.status(500).json({error: `error getting project list`});
 //     })
 // })
-//custom middleware
+
+
+//endpoints 
+//*************************************GET   *************************************
+router.get('/:id', validateProjectId, (req,res) => {
+    res.status(200).json(req.project.actions);
+})
+
+
+
+//*************************************POST  *************************************
+
+
+
+
+//*************************************PUT   *************************************
+
+
+
+//*************************************DELETE   *************************************
+
+
+
+////*************************************CUSTOM MIDDLEWARE*************************************
+function validateProjectId(req,res,next) {
+    const { id } = req.params;
+    PM.get(id)
+        .then(project => {
+            console.log("project within validateProjectId: ", project);
+            if(project) {
+                req.project = project
+                next();
+            }
+            else{
+                res.status(404).json({error: "Project with id does not exist"});
+            }
+        })
+}
 
 
 
