@@ -5,8 +5,11 @@ const server = express();
 server.use(express.json());
 
 //middleware
-const projectM = require('./data/helpers/projectModel.js');
-const actionM = require('./data/helpers/actionModel.js');
+
+const projectM = require('./data/helpers/projectModelRouter.js');
+
+
+const actionM = require('./data/helpers/actionModelRouter.js');
 
 server.use(express.json());
 
