@@ -30,8 +30,19 @@ router.get('/:id/actions', validateProjectId, (req,res) => {
 
 //*************************************POST  *************************************
 
+router.post('/', validateProjectPost, (req,res) => {
+    const newProject = req.body;
+    PM.insert(newProject)
+        .then(project => {
+            res.status(201).json(project);
+        })
+        .catch(err => {
+            console.log("err in POST lf /:id", err);
+            res.status(500).json({error: `There was an error in adding a new project`});
+        });
+})
 
-//*************************************PUT  *************************************
+//*************************************PUT   *************************************
 
 
 
@@ -52,6 +63,33 @@ function validateProjectId(req,res,next) {
         })
 }
 
+function validateProjectPost(req,res,next) {
+    const { name } = req.body;
+    const { description } = req.body;
+
+    
+    if(!req.body) {
+        return res.status(400).json({error: `must provide a body to create a new project!`});
+    }
+
+    if(!name){
+        return res.status(400).json({error: `must provide a NAME for a new project!`});
+    }
+    
+    if(!description){
+        return res.status(400).json({error: `must provide a DESCRIPTION for a new project!`});
+    }
+
+    if(typeof name !== "string"){
+        return res.status(400).json({error: `must provide string for name`});
+    }
+    if(typeof description !== "string"){
+        return res.status(400).json({error: `must provide string for description`});
+    }
+    req.body = {name, description}
+    next();
+
+}
 
 
 module.exports = router;
