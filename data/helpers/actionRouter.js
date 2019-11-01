@@ -32,7 +32,40 @@ catch(error){
 }
 })
 
+router.put('/:id/:actionID', validateProjectID, validateActionID, async (req,res) => {
+const { id } = req.params;
+const { actionID } = req.params;
+const updateAction = req.body;
 
+try{
+    const update = await Action.update(actionID, updateAction)
+    if(update){
+        const updatedA = await Action.get(actionID)
+        res.status(200).json(updatedA);
+    }
+    else{
+        res.status(500).json({error: `error in getting the updated action! `})
+    }
+}
+catch(error){
+    console.log(error)
+    res.status(500).json({error: `error in updating action with id of ${actionID} with project ID: ${id}`})
+}
+})
+
+router.delete('/:id/:actionID', validateProjectID, validateActionID, async (req,res) => {
+const { id } = req.params;
+const { actionID } = req.params;
+try{
+    const deleting = await Action.remove(actionID)
+    if(deleting){
+        res.status(204).json({message: `you have successfully deleted the ACTION associated with Project ID: ${id}`})
+    }
+}
+catch(error){
+    res.status(500).json({error: `There has been an error in deleting project ${id}'s action with ID ${actionID}!`})
+}
+})
 
 /*              Custom Middleware               */
 async function validateProjectID(req,res, next) {
