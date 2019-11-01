@@ -2,11 +2,35 @@ const router = require('express').Router();
 const Action = require('./actionModel.js')
 const Project = require('./projectModel.js')
 
+router.get('/:id', validateProjectID,  (req,res) => {
+ 
+    if(req.project.actions.length == 0){
+    return res.status(200).json({error: `you do not have any actions at the moment for this project`})
+    }
+    else{
+        res.status(200).json(req.project.actions);
+    }
 
+})
 
+router.get('/:id/:actionID', validateProjectID, validateActionID, (req,res) => {
+res.status(200).json(req.action);
+})
 
-
-
+router.post('/:id', validateActionID, validateActionPost, async (req,res) => {
+const {id} = req.params;
+const newAction = req.body;
+try{
+    const actioNew = await Action.insert(newAction)
+    if(actioNew){
+        res.status(201).json(actioNew);
+    }
+}
+catch(error){
+    console.log(error)
+    res.status(500).json({error: `There was an error in adding a new action to the project with ID ${id}`});
+}
+})
 
 
 
@@ -80,4 +104,5 @@ function validateActionPost(req,res,next) {
     req.body = { project_id, description, notes }
     next();
 }
+
 module.exports = router
