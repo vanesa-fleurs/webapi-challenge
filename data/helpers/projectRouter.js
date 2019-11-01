@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const Project = require('./projectModel.js')
 
-
 router.get('/:id', validateProjectID, (req,res) => {
     res.status(200).json(req.project);
 })
@@ -22,7 +21,6 @@ router.get('/:id/actions', validateProjectID, async (req,res) => {
         res.status(500).json({error: `error in retrieving actions for project with ID: ${id}`});
     }
 });
-
 
 router.post('/', validateProjectPOST, async (req,res) => {
     const newProject = req.body;
@@ -69,9 +67,6 @@ router.delete('/:id', validateProjectID, async (req,res) => {
     }
 })
 
-
-
-
 /*                  Custom MiddleWare               */
 
 async function validateProjectID(req,res, next) {
@@ -115,4 +110,5 @@ async function validateProjectPOST(req, res, next) {
     req.body = {name, description}
     next();
 }
+
 module.exports = router;
