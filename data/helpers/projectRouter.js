@@ -37,6 +37,38 @@ router.post('/', validateProjectPOST, async (req,res) => {
     }
 })
 
+router.put('/:id', validateProjectID, async (req,res) => {
+    const { id } = req.params;
+    const changes = req.body;
+
+    try{
+        const update = Project.update(id, changes)
+        if(update) {
+            const newProject = await Project.get(id);
+            res.status(200).json(newProject)
+        }
+        else{
+            res.status(500).json({error: `error in getting the updated project! `})
+        }
+    }
+    catch(error){
+        res.status(500).json({message: `error in updating project`})
+    }
+})
+
+router.delete('/:id', validateProjectID, async (req,res) => {
+    const {id} = req.params;
+    try {
+        const removed = await Project.remove(id)
+        if(removed){ 
+            res.status(204).json({message: `you have successfully deleted the project with ID: ${id}`})
+        }
+    }
+    catch(error){
+        res.status(500).json({error: `error in deleting project with an id of: ${id}`})
+    }
+})
+
 
 
 
